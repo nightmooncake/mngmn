@@ -153,63 +153,42 @@
         </div>
     </div>
 
-    <div id="notification-container" class="fixed top-4 right-4 z-50 space-y-2 w-full max-w-xs pointer-events-none"></div>
+    <div id="toast-success" class="fixed top-5 right-5 z-50 w-full max-w-xs p-4 text-gray-500 bg-white rounded-lg shadow-lg dark:text-gray-400 dark:bg-gray-800 hidden animate-fade-in-down transition-all duration-500 ease-out" role="alert">
+        <div class="flex items-center">
+            <div class="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-green-500 bg-green-100 rounded-lg dark:bg-green-800 dark:text-green-200">
+                <i class="fas fa-check-circle text-lg"></i>
+                <span class="sr-only">Check icon</span>
+            </div>
+            <div class="ml-3 text-sm font-normal">
+                <span id="toast-message"></span>
+            </div>
+            <button type="button" class="ml-auto -mx-1.5 -my-1.5 bg-white text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex items-center justify-center h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#toast-success" aria-label="Close">
+                <span class="sr-only">Close</span>
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            function showNotification(message, type) {
-                const container = document.getElementById('notification-container');
-                const notification = document.createElement('div');
-                let iconClass = '';
-                let bgColorClass = '';
-                let textColorClass = 'text-white';
-                switch (type) {
-                    case 'success':
-                        iconClass = 'fas fa-check-circle';
-                        bgColorClass = 'bg-green-500';
-                        break;
-                    case 'error':
-                        iconClass = 'fas fa-times-circle';
-                        bgColorClass = 'bg-red-500';
-                        break;
-                    case 'info':
-                        iconClass = 'fas fa-info-circle';
-                        bgColorClass = 'bg-blue-500';
-                        break;
-                    default:
-                        iconClass = 'fas fa-info-circle';
-                        bgColorClass = 'bg-gray-500';
-                }
-                notification.className = `p-4 rounded-lg shadow-xl flex items-center transition-all duration-500 transform pointer-events-auto ${bgColorClass} ${textColorClass} animate-slide-in-right`;
-                notification.innerHTML = `
-                    <div class="flex-shrink-0">
-                        <i class="${iconClass} text-xl"></i>
-                    </div>
-                    <div class="ml-3 flex-1">
-                        <p class="text-sm font-semibold">${message}</p>
-                    </div>
-                    <button type="button" class="ml-auto -mx-1.5 -my-1.5 p-1.5 inline-flex h-8 w-8 rounded-lg ${bgColorClass} hover:bg-opacity-80 transition-colors" aria-label="Close notification">
-                        <span class="sr-only">Close</span>
-                        <i class="fas fa-times text-sm"></i>
-                    </button>
-                `;
-                container.prepend(notification);
-                notification.querySelector('button').addEventListener('click', () => {
-                    notification.classList.remove('animate-slide-in-right');
-                    notification.classList.add('animate-slide-out-right');
-                    setTimeout(() => notification.remove(), 500);
-                });
+            const successMessage = "{{ session('success') }}";
+            const toast = document.getElementById('toast-success');
+            const toastMessage = document.getElementById('toast-message');
+
+            if (successMessage) {
+                toastMessage.textContent = successMessage;
+                toast.classList.remove('hidden');
                 setTimeout(() => {
-                    notification.classList.remove('animate-slide-in-right');
-                    notification.classList.add('animate-slide-out-right');
-                    setTimeout(() => notification.remove(), 500);
+                    toast.classList.add('animate-fade-out-up');
+                    toast.classList.remove('animate-fade-in-down');
+                    setTimeout(() => {
+                        toast.classList.add('hidden');
+                    }, 500);
                 }, 5000);
             }
-            @if(session('success'))
-                showNotification(@json(session('success')), 'success');
-            @elseif(session('error'))
-                showNotification(@json(session('error')), 'error');
-            @endif
+
             const modal = document.getElementById('deleteModal');
             const confirmBtn = document.getElementById('confirmDeleteBtn');
             const cancelBtn = document.getElementById('cancelDeleteBtn');
@@ -231,4 +210,32 @@
             });
         });
     </script>
+    <style>
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeOutUp {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+        .animate-fade-in-down {
+            animation: fadeInDown 0.5s ease-out forwards;
+        }
+        .animate-fade-out-up {
+            animation: fadeOutUp 0.5s ease-in forwards;
+        }
+    </style>
 </x-app-layout>

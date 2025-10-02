@@ -15,6 +15,7 @@ public function up()
         $table->string('password');
         $table->string('role')->default('user'); 
         $table->timestamps();
+        $table->softDeletes();
     });
 }
 

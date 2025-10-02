@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 use App\Models\Supplier;
-use Illuminate\Http\Request;
+use App\Http\Requests\StoreSupplierRequest;
+use App\Http\Requests\UpdateSupplierRequest;
 class SupplierController extends Controller
 {
     public function index() {
@@ -12,29 +13,17 @@ class SupplierController extends Controller
     public function create() {
         return view('suppliers.create');
     }
-    public function store(Request $request) {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'nullable|email',
-            'phone' => 'nullable|string|max:15',
-            'address' => 'nullable|string',
-        ]);
-        Supplier::create($request->all());
+    public function store(StoreSupplierRequest $request) {
+        Supplier::create($request->validated());
         return redirect()->route('suppliers.index')->with('status', 'Pemasok berhasil ditambahkan!');
     }
     public function edit(Supplier $supplier)
     {
         return view('suppliers.edit', compact('supplier'));
     }
-    public function update(Request $request, $id) {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'nullable|email',
-            'phone' => 'nullable|string|max:15',
-            'address' => 'nullable|string',
-        ]);
+    public function update(UpdateSupplierRequest $request, $id) {
         $supplier = Supplier::findOrFail($id);
-        $supplier->update($request->all());
+        $supplier->update($request->validated());
         return redirect()->route('suppliers.index')->with('status', 'Pemasok berhasil diperbarui!');
     }
     public function destroy($id) {

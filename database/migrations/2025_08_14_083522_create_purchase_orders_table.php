@@ -14,7 +14,8 @@ public function up()
         $table->date('order_date');
         $table->decimal('total', 10, 2);
         $table->string('status');
-        $table->timestamps();
+    $table->timestamps();
+    $table->softDeletes();
     });
 }
 

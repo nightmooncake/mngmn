@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\StockMovement;
 use App\Models\Product;
 use App\Models\User;
+use App\Http\Requests\StoreStockMovementRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -47,14 +48,8 @@ class StockMovementController extends Controller
         return view('stockmovements.create', compact('products'));
     }
 
-    public function store(Request $request)
+    public function store(StoreStockMovementRequest $request)
     {
-        $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1',
-            'type' => 'required|in:in,out',
-        ]);
-
         $product = Product::findOrFail($request->product_id);
 
         try {

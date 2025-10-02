@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Supplier;
+use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
@@ -38,23 +40,13 @@ class ProductController extends Controller
         return view('products.create', compact('categories', 'suppliers'));
     }
 
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255|unique:products',
-            'price' => 'nullable|numeric|min:0',
-            'description' => 'nullable|string',
-            'category_id' => 'required|exists:categories,id',
-            'supplier_id' => 'required|exists:suppliers,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
+        $validatedData = $request->validated();
         if ($request->hasFile('image')) {
             $validatedData['image'] = $request->file('image')->store('product_images', 'public');
         }
-
         Product::create($validatedData);
-
         return redirect()->route('products.index')->with('success', '✅ Produk berhasil ditambahkan!');
     }
 
@@ -76,19 +68,10 @@ class ProductController extends Controller
         return view('products.edit', compact('product', 'categories', 'suppliers'));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateProductRequest $request, $id)
     {
         $product = Product::findOrFail($id);
-
-        $validatedData = $request->validate([
-            'name' => ['required', 'string', 'max:255', Rule::unique('products')->ignore($product->id)],
-            'price' => 'nullable|numeric|min:0',
-            'description' => 'nullable|string',
-            'category_id' => 'required|exists:categories,id',
-            'supplier_id' => 'required|exists:suppliers,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
+        $validatedData = $request->validated();
         if ($request->hasFile('image')) {
             if ($product->image && Storage::disk('public')->exists($product->image)) {
                 Storage::disk('public')->delete($product->image);
@@ -97,9 +80,7 @@ class ProductController extends Controller
         } else {
             $validatedData['image'] = $product->image;
         }
-
         $product->update($validatedData);
-
         return redirect()->route('products.index')->with('success', '✅ Produk berhasil diperbarui.');
     }
 
@@ -212,6 +193,6 @@ class ProductController extends Controller
     public function exportExcel()
     {
         $fileName = 'produk_' . date('Y_m_d_H_i_s') . '.xlsx';
-        return Excel::download(new ProductsExport, $fileName);
+        // return Excel::download(new ProductsExport, $fileName);
     }
 }

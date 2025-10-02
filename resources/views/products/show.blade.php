@@ -28,10 +28,9 @@
                     <div class="mt-8">
                         <a href="{{ route('products.index') }}"
                            class="inline-flex items-center px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 text-sm font-medium rounded-md transition">
-                            ← Back to List
+                            Back to List
                         </a>
                     </div>
-
                 </div>
             </div>
         </div>

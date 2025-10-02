@@ -10,36 +10,28 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('suppliers', function (Blueprint $table) {
-            if (!Schema::hasColumn('suppliers', 'contact_person')) {
-                $table->string('contact_person')->after('name');
-            }
-            if (!Schema::hasColumn('suppliers', 'email')) {
-                $table->string('email')->after('contact_person')->nullable();
-            }
-            if (!Schema::hasColumn('suppliers', 'phone')) {
-                $table->string('phone')->after('email')->nullable();
-            }
-            if (!Schema::hasColumn('suppliers', 'address')) {
-                $table->string('address')->after('phone')->nullable();
-            }
+            $table->string('contact_person')->after('name');
+            $table->string('email')->nullable()->after('contact_person');
+            $table->string('phone')->nullable()->after('email');
+            $table->string('address')->nullable()->after('phone');
+            $table->unsignedInteger('user_id')->nullable()->after('address');
+            $table->boolean('is_active')->default(true)->after('user_id');
+            $table->softDeletes();
         });
     }
 
     public function down(): void
     {
         Schema::table('suppliers', function (Blueprint $table) {
-            if (Schema::hasColumn('suppliers', 'contact_person')) {
-                $table->dropColumn('contact_person');
-            }
-            if (Schema::hasColumn('suppliers', 'email')) {
-                $table->dropColumn('email');
-            }
-            if (Schema::hasColumn('suppliers', 'phone')) {
-                $table->dropColumn('phone');
-            }
-            if (Schema::hasColumn('suppliers', 'address')) {
-                $table->dropColumn('address');
-            }
+            $table->dropColumn([
+                'contact_person',
+                'email',
+                'phone',
+                'address',
+                'user_id',
+                'is_active',
+                'deleted_at',
+            ]);
         });
     }
 };

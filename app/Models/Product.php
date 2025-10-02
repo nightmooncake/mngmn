@@ -30,7 +30,6 @@ class Product extends Model
 
     protected $appends = ['stock'];
 
-    // Relasi
     public function category()
     {
         return $this->belongsTo(Category::class);

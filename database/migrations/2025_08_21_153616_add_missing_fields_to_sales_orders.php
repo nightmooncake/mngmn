@@ -9,38 +9,14 @@ return new class extends Migration
     public function up()
     {
         Schema::table('sales_orders', function (Blueprint $table) {
-
-            if (!Schema::hasColumn('sales_orders', 'customer_name')) {
-                $table->string('customer_name')->after('id');
-            }
-
-            if (!Schema::hasColumn('sales_orders', 'order_date')) {
-                $table->date('order_date')->after('customer_name');
-            }
-
-            if (!Schema::hasColumn('sales_orders', 'product_id')) {
-                $table->foreignId('product_id')->constrained('products')->onDelete('cascade')->after('order_date');
-            }
-
-            if (!Schema::hasColumn('sales_orders', 'quantity')) {
-                $table->integer('quantity')->after('product_id');
-            }
-
-            if (!Schema::hasColumn('sales_orders', 'unit_price')) {
-                $table->integer('unit_price')->after('quantity');
-            }
-
-            if (!Schema::hasColumn('sales_orders', 'total')) {
-                $table->integer('total')->after('unit_price');
-            }
-
-            if (!Schema::hasColumn('sales_orders', 'status')) {
-                $table->string('status')->after('total');
-            }
-
-            if (!Schema::hasColumn('sales_orders', 'user_id')) {
-                $table->foreignId('user_id')->nullable()->constrained('users')->after('status');
-            }
+            $table->string('customer_name')->after('id');
+            $table->date('order_date')->after('customer_name');
+            $table->unsignedInteger('product_id')->after('order_date');
+            $table->integer('quantity')->after('product_id');
+            $table->integer('unit_price')->after('quantity');
+            $table->integer('total')->after('unit_price');
+            $table->string('status')->after('total');
+            $table->unsignedInteger('user_id')->nullable()->after('status');
         });
     }
 

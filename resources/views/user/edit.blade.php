@@ -7,6 +7,7 @@
                 <form method="POST" action="{{ route('users.update', $user) }}">
                     @csrf
                     @method('PUT')
+
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Nama</label>
@@ -24,6 +25,11 @@
                                 <option value="user" {{ $user->role === 'user' ? 'selected' : '' }}>User </option>
                                 <option value="admin" {{ $user->role === 'admin' ? 'selected' : '' }}>Admin</option>
                             </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Password Baru <span class="text-xs text-gray-400">(Opsional)</span></label>
+                            <input type="password" name="password" class="w-full mt-1 border border-gray-300 rounded px-3 py-2 focus:ring-blue-300 focus:border-blue-400" placeholder="Biarkan kosong jika tidak ingin mengubah">
                         </div>
                     </div>
 

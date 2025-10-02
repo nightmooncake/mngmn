@@ -16,6 +16,7 @@ Schema::create('products', function (Blueprint $table) {
     $table->integer('stock');
     $table->text('description')->nullable();
     $table->timestamps();
+    $table->softDeletes();
 });
 }
 
